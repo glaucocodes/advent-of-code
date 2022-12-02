@@ -31,8 +31,6 @@ func caloriesOfElfWithMostLineByLine() -> Int {
 }
 
 func caloriesOfElfWithMostReduce() -> Int {
-    var mostCalories: Int = 0
-    
     let filePath = Bundle.main.path(forResource:"input", ofType: "txt")
     
     let result = Result {
@@ -43,23 +41,46 @@ func caloriesOfElfWithMostReduce() -> Int {
         return 0
     }
     
-    input.components(
+    return input.components(
         separatedBy: "\n\n"
-    ).forEach({
-        let calorieCounter: Int = $0.components(
+    ).compactMap({
+        return $0.components(
             separatedBy: "\n"
         ).compactMap({
             Int($0)
         }).reduce(0, +)
         
-        if calorieCounter > mostCalories {
-            mostCalories = calorieCounter
-        }
-    })
+    }).max() ?? 0
     
-    return mostCalories
+}
+
+func sumOfTopThree() -> Int {
+    let filePath = Bundle.main.path(forResource:"input", ofType: "txt")
+    
+    let result = Result {
+        try String(contentsOfFile: filePath.unsafelyUnwrapped, encoding: .utf8)
+    }
+    
+    guard let input = try? result.get() else {
+        return 0
+    }
+    
+    return input.components(
+        separatedBy: "\n\n"
+    ).compactMap({
+        return $0.components(
+            separatedBy: "\n"
+        ).compactMap({
+            Int($0)
+        }).reduce(0, +)
+        
+    }).sorted(
+        by: {$0 > $1}
+    )[0...2].reduce(0, +)
 }
 
 print(caloriesOfElfWithMostLineByLine())
 
 print(caloriesOfElfWithMostReduce())
+
+print(sumOfTopThree())
